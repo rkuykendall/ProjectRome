@@ -33,13 +33,5 @@ A 4X game for Android (Explore, Expand, Exploite, Exterminate)
   
   Contacts
   --------
-  
-  Lead Programmer - robert@rkuykendall.com
-  
-  Programmer - andy@cocide.com
-  
-  Lead Artist - drgon47@gmail.com
-  
-  UI - Danielle Fudger
-  
+
 
