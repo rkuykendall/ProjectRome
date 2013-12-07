@@ -9,14 +9,16 @@ import android.opengl.GLU;
 public class MyGLRenderer implements GLSurfaceView.Renderer {
 	// private HexTile mHex;
     private Tile mTile;
+    private Tile mTile2;
     private float mAngle;
 	
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
         // Set the background frame color
-        gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        gl.glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 
        mTile = new Tile();
+       mTile2 = new Tile();
     }
 
     @Override
@@ -30,10 +32,33 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         gl.glLoadIdentity();   // reset the matrix to its default state
 
         // When using GL_MODELVIEW, you must set the view point
-        GLU.gluLookAt(gl, 0, 0, -3, 0f, 0f, 0f, 0f, 1.0f, 0.0f);
-
+        GLU.gluLookAt(gl, 
+        			  -1, 0, -6, 
+        			  0f, 0f, 0f, 
+        			  0f, 100.0f, 0.0f);
+                
         // Draw tile
         mTile.draw(gl);
+        gl.glTranslatef(2.1f,0.0f,0.0f);
+        mTile.draw(gl);
+        gl.glTranslatef(-4.2f,0.0f,0.0f);
+        mTile.draw(gl);
+        gl.glTranslatef(2.1f,0.0f,0.0f);                   // back to center
+
+        gl.glTranslatef(1.05f,1.6f,0.0f);                   // Move Right 3 Units
+        mTile.draw(gl);
+        gl.glTranslatef(2.1f,0.0f,0.0f);                   // Move Right 3 Units
+        mTile.draw(gl);
+        gl.glTranslatef(-4.2f,0.0f,0.0f);                   // Move Right 3 Units
+        mTile.draw(gl);
+
+        gl.glTranslatef(2.1f,-3.2f,0.0f);                   // Move Right 3 Units
+        mTile.draw(gl);
+        gl.glTranslatef(2.1f,0.0f,0.0f);                   // Move Right 3 Units
+        mTile.draw(gl);
+        gl.glTranslatef(-4.2f,0.0f,0.0f);                   // Move Right 3 Units
+        mTile.draw(gl);
+
     }
 
     @Override
