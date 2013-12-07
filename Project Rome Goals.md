@@ -2,6 +2,7 @@ Phone/Tablet/Desktop based Civilization style gaming.
 ==
 
 Needs to have:
+---
 
 Multiplayer
 
@@ -13,7 +14,7 @@ Commonly used file formats, e.g: .svg, .obj, .3DS, .AI, .AVI, .mp3, .ogg, .png, 
 
 No ads, no LITE version.
 
-==
+---
 
 
 Would like to have:
