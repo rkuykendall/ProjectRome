@@ -9,16 +9,16 @@ import android.opengl.GLU;
 public class MyGLRenderer implements GLSurfaceView.Renderer {
 	// private HexTile mHex;
     private Tile mTile;
-    private Tile mTile2;
     private float mAngle;
 	
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
         // Set the background frame color
         gl.glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
+        // gl.glHint(GL10.GL_POLYGON_SMOOTH_HINT, GL10.GL_NICEST);
 
+        
        mTile = new Tile();
-       mTile2 = new Tile();
     }
 
     @Override
@@ -77,7 +77,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         		ratio,  // Right
         		-1, 	// Bottom
         		1, 		// Top
-        		2, 		// Near
+        		1, 		// Near
         		8 		// Far
         );  // apply the projection matrix
     }
