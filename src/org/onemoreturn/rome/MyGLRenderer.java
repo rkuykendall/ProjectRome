@@ -5,6 +5,7 @@ import javax.microedition.khronos.opengles.GL10;
 
 import android.opengl.GLSurfaceView;
 import android.opengl.GLU;
+import android.util.Log;
 
 public class MyGLRenderer implements GLSurfaceView.Renderer {
 	// private HexTile mHex;
@@ -33,7 +34,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
         // When using GL_MODELVIEW, you must set the view point
         GLU.gluLookAt(gl, 
-        			  0, -2, -6, 		// Eye xyz
+        			  0, -2, (mAngle/20)-6, 		// Eye xyz
         			  0f, 0f, 0f, 		// Center xyz
         			  0f, 100.0f, 0.0f	// Up xyz
         );
@@ -96,5 +97,8 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
      */
     public void setAngle(float angle) {
         mAngle = angle;
+    	String TAG = "Development";
+    	Log.e(TAG,"Test: "+mAngle);
+
     }
 }
