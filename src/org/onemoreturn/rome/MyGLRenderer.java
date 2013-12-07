@@ -33,9 +33,10 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
         // When using GL_MODELVIEW, you must set the view point
         GLU.gluLookAt(gl, 
-        			  -1, 0, -6, 
-        			  0f, 0f, 0f, 
-        			  0f, 100.0f, 0.0f);
+        			  0, -2, -6, 		// Eye xyz
+        			  0f, 0f, 0f, 		// Center xyz
+        			  0f, 100.0f, 0.0f	// Up xyz
+        );
                 
         // Draw tile
         mTile.draw(gl);
@@ -43,20 +44,20 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         mTile.draw(gl);
         gl.glTranslatef(-4.2f,0.0f,0.0f);
         mTile.draw(gl);
-        gl.glTranslatef(2.1f,0.0f,0.0f);                   // back to center
+        gl.glTranslatef(2.1f,0.0f,0.0f);
 
-        gl.glTranslatef(1.05f,1.6f,0.0f);                   // Move Right 3 Units
+        gl.glTranslatef(1.05f,1.6f,0.0f);
         mTile.draw(gl);
-        gl.glTranslatef(2.1f,0.0f,0.0f);                   // Move Right 3 Units
-        mTile.draw(gl);
-        gl.glTranslatef(-4.2f,0.0f,0.0f);                   // Move Right 3 Units
+        gl.glTranslatef(2.1f,0.0f,0.0f);
+        // mTile.draw(gl);
+        gl.glTranslatef(-4.2f,0.0f,0.0f);
         mTile.draw(gl);
 
-        gl.glTranslatef(2.1f,-3.2f,0.0f);                   // Move Right 3 Units
+        gl.glTranslatef(2.1f,-3.2f,0.0f);
         mTile.draw(gl);
-        gl.glTranslatef(2.1f,0.0f,0.0f);                   // Move Right 3 Units
-        mTile.draw(gl);
-        gl.glTranslatef(-4.2f,0.0f,0.0f);                   // Move Right 3 Units
+        gl.glTranslatef(2.1f,0.0f,0.0f);
+        // mTile.draw(gl);
+        gl.glTranslatef(-4.2f,0.0f,0.0f);
         mTile.draw(gl);
 
     }
@@ -71,7 +72,14 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         float ratio = (float) width / height;
         gl.glMatrixMode(GL10.GL_PROJECTION);        // set matrix to projection mode
         gl.glLoadIdentity();                        // reset the matrix to its default state
-        gl.glFrustumf(-ratio, ratio, -1, 1, 3, 7);  // apply the projection matrix
+        gl.glFrustumf(
+        		-ratio, // Left
+        		ratio,  // Right
+        		-1, 	// Bottom
+        		1, 		// Top
+        		2, 		// Near
+        		8 		// Far
+        );  // apply the projection matrix
     }
 
     /**
