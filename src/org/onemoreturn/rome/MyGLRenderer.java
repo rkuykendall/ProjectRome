@@ -39,27 +39,56 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         			  0f, 100.0f, 0.0f	// Up xyz
         );
                 
+        int SizeY = 10;
+        int SizeX = 8;
+        float SpaceY = 1.6f;
+        float SpaceX = 2.1f;
+        
+        // int [][] map = new int[SizeX][SizeY];
+
+        gl.glTranslatef(-0.5f*SpaceX*SizeX,((SpaceY*SizeY)/-2)+3,0.0f);
+        for(int i=0; i<SizeY; i++) {
+            for(int j=0; j<SizeX; j++) {
+                mTile.draw(gl);
+
+                // Move left 1
+                gl.glTranslatef(SpaceX,0.0f,0.0f);
+            }
+            // Carriage return
+            gl.glTranslatef(-1*SpaceX*SizeX,0.0f,0.0f);
+
+            // Move up 1 row
+            gl.glTranslatef(0.0f,SpaceY,0.0f);
+
+            // Offset
+            if (i%2 == 0) {
+                gl.glTranslatef(SpaceX/2,0.0f,0.0f);
+            } else {
+                gl.glTranslatef(SpaceX/-2,0.0f,0.0f);
+            }
+        }
+        
         // Draw tile
-        mTile.draw(gl);
-        gl.glTranslatef(2.1f,0.0f,0.0f);
-        mTile.draw(gl);
-        gl.glTranslatef(-4.2f,0.0f,0.0f);
-        mTile.draw(gl);
-        gl.glTranslatef(2.1f,0.0f,0.0f);
-
-        gl.glTranslatef(1.05f,1.6f,0.0f);
-        mTile.draw(gl);
-        gl.glTranslatef(2.1f,0.0f,0.0f);
-        // mTile.draw(gl);
-        gl.glTranslatef(-4.2f,0.0f,0.0f);
-        mTile.draw(gl);
-
-        gl.glTranslatef(2.1f,-3.2f,0.0f);
-        mTile.draw(gl);
-        gl.glTranslatef(2.1f,0.0f,0.0f);
-        // mTile.draw(gl);
-        gl.glTranslatef(-4.2f,0.0f,0.0f);
-        mTile.draw(gl);
+//        mTile.draw(gl);
+//        gl.glTranslatef(2.1f,0.0f,0.0f);
+//        mTile.draw(gl);
+//        gl.glTranslatef(-4.2f,0.0f,0.0f);
+//        mTile.draw(gl);
+//        gl.glTranslatef(2.1f,0.0f,0.0f);
+//
+//        gl.glTranslatef(1.05f,1.6f,0.0f);
+//        mTile.draw(gl);
+//        gl.glTranslatef(2.1f,0.0f,0.0f);
+//        // mTile.draw(gl);
+//        gl.glTranslatef(-4.2f,0.0f,0.0f);
+//        mTile.draw(gl);
+//
+//        gl.glTranslatef(2.1f,-3.2f,0.0f);
+//        mTile.draw(gl);
+//        gl.glTranslatef(2.1f,0.0f,0.0f);
+//        // mTile.draw(gl);
+//        gl.glTranslatef(-4.2f,0.0f,0.0f);
+//        mTile.draw(gl);
 
     }
 
@@ -79,7 +108,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         		-1, 	// Bottom
         		1, 		// Top
         		1, 		// Near
-        		8 		// Far
+        		10 		// Far
         );  // apply the projection matrix
     }
 
