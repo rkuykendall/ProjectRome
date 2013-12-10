@@ -10,7 +10,9 @@ import android.util.Log;
 public class MyGLRenderer implements GLSurfaceView.Renderer {
 	// private HexTile mHex;
     private Tile mTile;
-    private float mAngle;
+    private float viewX = 0;
+    private float viewY = 0;
+	private float viewZ = 0;
 	
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
@@ -34,13 +36,13 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
         // When using GL_MODELVIEW, you must set the view point
         GLU.gluLookAt(gl, 
-        			  0, -2, (mAngle/20)-6, 		// Eye xyz
-        			  0f, 0f, 0f, 		// Center xyz
-        			  0f, 100.0f, 0.0f	// Up xyz
+        			  viewX, viewY-2, viewZ-5.9f, 	// Eye xyz
+        			  viewX, viewY, 0f, 		// Center xyz
+        			  0f, 100.0f, 0.0f			// Up xyz
         );
                 
-        int SizeY = 10;
-        int SizeX = 8;
+        int SizeY = 50;
+        int SizeX = 50;
         float SpaceY = 1.6f;
         float SpaceX = 2.1f;
         
@@ -67,29 +69,6 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
                 gl.glTranslatef(SpaceX/-2,0.0f,0.0f);
             }
         }
-        
-        // Draw tile
-//        mTile.draw(gl);
-//        gl.glTranslatef(2.1f,0.0f,0.0f);
-//        mTile.draw(gl);
-//        gl.glTranslatef(-4.2f,0.0f,0.0f);
-//        mTile.draw(gl);
-//        gl.glTranslatef(2.1f,0.0f,0.0f);
-//
-//        gl.glTranslatef(1.05f,1.6f,0.0f);
-//        mTile.draw(gl);
-//        gl.glTranslatef(2.1f,0.0f,0.0f);
-//        // mTile.draw(gl);
-//        gl.glTranslatef(-4.2f,0.0f,0.0f);
-//        mTile.draw(gl);
-//
-//        gl.glTranslatef(2.1f,-3.2f,0.0f);
-//        mTile.draw(gl);
-//        gl.glTranslatef(2.1f,0.0f,0.0f);
-//        // mTile.draw(gl);
-//        gl.glTranslatef(-4.2f,0.0f,0.0f);
-//        mTile.draw(gl);
-
     }
 
     @Override
@@ -108,26 +87,19 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         		-1, 	// Bottom
         		1, 		// Top
         		1, 		// Near
-        		10 		// Far
+        		30 		// Far
         );  // apply the projection matrix
     }
 
-    /**
-     * Returns the rotation angle of the triangle shape (mTriangle).
-     *
-     * @return - A float representing the rotation angle.
-     */
-    public float getAngle() {
-        return mAngle;
-    }
+    public float getViewX() { return viewX; }
+    public float getViewY() { return viewY; }
+    public float getViewZ() { return viewZ; }
 
-    /**
-     * Sets the rotation angle of the triangle shape (mTriangle).
-     */
-    public void setAngle(float angle) {
-        mAngle = angle;
-    	String TAG = "Development";
-    	Log.e(TAG,"Test: "+mAngle);
-
+    public void setViewX(float f) { viewX = f; }
+    public void setViewY(float f) { viewY = f; }
+    public void setViewZ(float f) {
+    	if (f < -20) { viewZ = -20; }
+    	else if (f>1) { viewZ = 1; }
+    	else { viewZ = f; }
     }
 }

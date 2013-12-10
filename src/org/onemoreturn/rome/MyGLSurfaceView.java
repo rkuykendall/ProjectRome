@@ -2,9 +2,14 @@ package org.onemoreturn.rome;
 
 import android.content.Context;
 import android.opengl.GLSurfaceView;
+import android.util.FloatMath;
+import android.util.Log;
 import android.view.MotionEvent;
 
 class MyGLSurfaceView extends GLSurfaceView {
+    private static final String ZOOM = "Zoom";
+    private static final String DRAG = "Drag";
+
     private final MyGLRenderer mRenderer;
 
     public MyGLSurfaceView(Context context) {
@@ -18,9 +23,12 @@ class MyGLSurfaceView extends GLSurfaceView {
         setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
     }
 
-    private final float TOUCH_SCALE_FACTOR = 180.0f / 320;
-    private float mPreviousX;
-    private float mPreviousY;
+    // private final float TOUCH_SCALE_FACTOR = 180.0f / 320;
+    private final float TOUCH_SCALE_FACTOR = 0.02f;
+    private float mPreviousX = 0;
+    private float mPreviousY = 0;
+    private float mPreviousZ = 1;
+	private String mode = DRAG;
 
     @Override
     public boolean onTouchEvent(MotionEvent e) {
@@ -30,31 +38,53 @@ class MyGLSurfaceView extends GLSurfaceView {
 
         float x = e.getX();
         float y = e.getY();
+        float z = -1;
 
         switch (e.getAction()) {
+        	case MotionEvent.ACTION_POINTER_DOWN:
+        		Log.e("Development","Mode=Zoom");
+        		mode = ZOOM;
+        		break;
+
             case MotionEvent.ACTION_MOVE:
 
-                float dx = x - mPreviousX;
-                float dy = y - mPreviousY;
+            	if (mode == DRAG) {
+            		if (e.getPointerCount() >= 2) {
+                    	float sx = x - e.getX(1);
+                    	float sy = y - e.getY(1);
+                    	z = FloatMath.sqrt(sx*sx + sy*sy);
+                    	if (mPreviousZ == -1) { mPreviousZ = z; }
 
-                // reverse direction of rotation above the mid-line
-                if (y > getHeight() / 2) {
-                    dx = dx * -1 ;
-                }
+                    	// Log.d(TAG, "newDist=" + newDist);
+                    	// if (newDist > 10f) {
+                    	// matrix.set(savedMatrix);
+                    	float dz = z - mPreviousZ;
+                    	// Log.e("Development","dz: "+dz+" = "+z+"-"+mPreviousZ);
+                    	
+                    	// Log.e("Development","Scale: "+scale);
+                    	// float tmp = mRenderer.getViewZ();
+                    	mRenderer.setViewZ(mRenderer.getViewZ()+(dz * TOUCH_SCALE_FACTOR));
+                    	// Log.d("Development","Z: "+mRenderer.getViewZ()+" = "+tmp+"-("+dz+"*"+TOUCH_SCALE_FACTOR+")");
 
-                // reverse direction of rotation to left of the mid-line
-                if (x < getWidth() / 2) {
-                    dy = dy * -1 ;
-                }
+            		} else {
+                		float dx = x - mPreviousX;
+                    	float dy = y - mPreviousY;
+                    	mPreviousZ = -1;
 
-                mRenderer.setAngle(
-                        mRenderer.getAngle() +
-                        ((dx + dy) * TOUCH_SCALE_FACTOR));  // = 180.0f / 320
-                requestRender();
+                    	mRenderer.setViewX(mRenderer.getViewX()+(dx * TOUCH_SCALE_FACTOR));
+                    	mRenderer.setViewY(mRenderer.getViewY()+(dy * TOUCH_SCALE_FACTOR));
+            		}
+
+            	} else if (mode == ZOOM) {
+            	}
+            	
+            	break;
         }
 
         mPreviousX = x;
         mPreviousY = y;
+        mPreviousZ = z;
+    	requestRender();
         return true;
     }    
 }
