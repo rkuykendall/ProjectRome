@@ -71,8 +71,12 @@ class MyGLSurfaceView extends GLSurfaceView {
                     	float dy = y - mPreviousY;
                     	mPreviousZ = -1;
 
-                    	mRenderer.setViewX(mRenderer.getViewX()+(dx * TOUCH_SCALE_FACTOR));
-                    	mRenderer.setViewY(mRenderer.getViewY()+(dy * TOUCH_SCALE_FACTOR));
+                    	float zScale = mRenderer.getViewZ();
+                    	zScale = (zScale < 0) ? -zScale : zScale;
+                    	zScale *= 0.05;
+                    	zScale += 0.8f;
+                    	mRenderer.setViewX(mRenderer.getViewX()+(dx * TOUCH_SCALE_FACTOR * zScale));
+                    	mRenderer.setViewY(mRenderer.getViewY()+(dy * TOUCH_SCALE_FACTOR * zScale));
             		}
 
             	} else if (mode == ZOOM) {

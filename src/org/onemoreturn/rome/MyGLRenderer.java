@@ -17,8 +17,9 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
         // Set the background frame color
-        gl.glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
-        // gl.glHint(GL10.GL_POLYGON_SMOOTH_HINT, GL10.GL_NICEST);
+        gl.glClearColor(0.2f, 0.2f, 0.2f, 1.0f);		// Grey
+        // gl.glClearColor(0.552f, 0.768f, 0.207f, 1.0f);	// Green
+        // gl.glClearColor(0.376f, 0.509f, 0.659f, 1.0f);	// Blue
 
         
        mTile = new Tile();
@@ -41,8 +42,8 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         			  0f, 100.0f, 0.0f			// Up xyz
         );
                 
-        int SizeY = 50;
-        int SizeX = 50;
+        int SizeY = 20;
+        int SizeX = 20;
         float SpaceY = 1.6f;
         float SpaceX = 2.1f;
         
