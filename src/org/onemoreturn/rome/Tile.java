@@ -5,26 +5,59 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 
-import javax.microedition.khronos.opengles.GL10;
+import android.opengl.GLES20;
 
 /**
- * A two-dimensional triangle for use as a drawn object in OpenGL ES 1.0/1.1.
+ * A two-dimensional triangle for use as a drawn object in OpenGL ES 2.0.
  */
 public class Tile {
+    private final String vertexShaderCode =
+            // This matrix member variable provides a hook to manipulate
+            // the coordinates of the objects that use this vertex shader
+            "uniform mat4 uMVPMatrix;" +
+            "attribute vec4 vPosition;" +
+            "void main() {" +
+            // the matrix must be included as a modifier of gl_Position
+            // Note that the uMVPMatrix factor *must be first* in order
+            // for the matrix multiplication product to be correct.
+            "  gl_Position = uMVPMatrix * vPosition;" +
+            "}";
+
+    private final String fragmentShaderCode =
+            "precision mediump float;" +
+            "uniform vec4 vColor;" +
+            "void main() {" +
+            "  gl_FragColor = vColor;" +
+            "}";
+
     private final FloatBuffer vertexBuffer;
+    private final int mProgram;
+    private int mPositionHandle;
+    private int mColorHandle;
+    private int mMVPMatrixHandle;
 
     // number of coordinates per vertex in this array
     static final int COORDS_PER_VERTEX = 3;
-
-    private float vertices[] = {     // 0.0f,   0.0f, 0.0f,    //center
+//    static float vertices[] = {
+//            // in counterclockwise order:
+//            0.0f,  0.622008459f, 0.0f,   // top
+//           -0.5f, -0.311004243f, 0.0f,   // bottom left
+//            0.5f, -0.311004243f, 0.0f    // bottom right
+//    };
+    private float vertices[] = {  // 0.0f,   0.0f, 0.0f,    //center
     		0.0f,   1.0f, 0.0f,    // top
-           -1.0f,   0.5f, 0.0f,    // left top
-           -1.0f,  -0.5f, 0.0f,    // left bottom
-            0.0f,  -1.0f, 0.0f,    // bottom
-            1.0f,  -0.5f, 0.0f,    // right bottom
-            1.0f,  0.5f, 0.0f,     // right top
+    		-1.0f,   0.5f, 0.0f,   // left top
+    		-1.0f,  -0.5f, 0.0f,   // left bottom
+    		0.0f,  -1.0f, 0.0f,    // bottom
+    		1.0f,  -0.5f, 0.0f,    // right bottom
+    		1.0f,  0.5f, 0.0f,     // right top
     		0.0f,   1.0f, 0.0f,    // top
     };
+
+    
+    
+    private final int vertexCount = vertices.length / COORDS_PER_VERTEX;
+    private final int vertexStride = COORDS_PER_VERTEX * 4; // 4 bytes per vertex
 
     float color[] = { 0.63671875f, 0.76953125f, 0.22265625f, 0.0f };
     // float color[] = { 0.552f, 0.768f, 0.22265625f, 0.207f };
@@ -35,8 +68,8 @@ public class Tile {
     public Tile() {
         // initialize vertex byte buffer for shape coordinates
         ByteBuffer bb = ByteBuffer.allocateDirect(
-        // (number of coordinate values * 4 bytes per float)
-        vertices.length * 4);
+                // (number of coordinate values * 4 bytes per float)
+                vertices.length * 4);
         // use the device hardware's native byte order
         bb.order(ByteOrder.nativeOrder());
 
@@ -46,30 +79,59 @@ public class Tile {
         vertexBuffer.put(vertices);
         // set the buffer to read the first coordinate
         vertexBuffer.position(0);
+
+        // prepare shaders and OpenGL program
+        int vertexShader = MyGLRenderer.loadShader(
+                GLES20.GL_VERTEX_SHADER, vertexShaderCode);
+        int fragmentShader = MyGLRenderer.loadShader(
+                GLES20.GL_FRAGMENT_SHADER, fragmentShaderCode);
+
+        mProgram = GLES20.glCreateProgram();             // create empty OpenGL Program
+        GLES20.glAttachShader(mProgram, vertexShader);   // add the vertex shader to program
+        GLES20.glAttachShader(mProgram, fragmentShader); // add the fragment shader to program
+        GLES20.glLinkProgram(mProgram);                  // create OpenGL program executables
     }
 
     /**
      * Encapsulates the OpenGL ES instructions for drawing this shape.
      *
-     * @param gl - The OpenGL ES context in which to draw this shape.
+     * @param mvpMatrix - The Model View Project matrix in which to draw
+     * this shape.
      */
-    public void draw(GL10 gl) {
-        // Since this shape uses vertex arrays, enable them
-        gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
+    public void draw(float[] mvpMatrix) {
+        // Add program to OpenGL environment
+        GLES20.glUseProgram(mProgram);
 
-        // draw the shape
-        gl.glColor4f( // set color:
-                color[0], color[1],
-                color[2], color[3]);
-        gl.glVertexPointer( // point to vertex data:
-                COORDS_PER_VERTEX,
-                GL10.GL_FLOAT, 0, vertexBuffer);
-        gl.glDrawArrays(    // draw shape:
-                GL10.GL_TRIANGLE_FAN, 0,
-                vertices.length / COORDS_PER_VERTEX);
+        // get handle to vertex shader's vPosition member
+        mPositionHandle = GLES20.glGetAttribLocation(mProgram, "vPosition");
 
-        // Disable vertex array drawing to avoid
-        // conflicts with shapes that don't use it
-        gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
+        // Enable a handle to the triangle vertices
+        GLES20.glEnableVertexAttribArray(mPositionHandle);
+
+        // Prepare the triangle coordinate data
+        GLES20.glVertexAttribPointer(
+                mPositionHandle, COORDS_PER_VERTEX,
+                GLES20.GL_FLOAT, false,
+                vertexStride, vertexBuffer);
+
+        // get handle to fragment shader's vColor member
+        mColorHandle = GLES20.glGetUniformLocation(mProgram, "vColor");
+
+        // Set color for drawing the triangle
+        GLES20.glUniform4fv(mColorHandle, 1, color, 0);
+
+        // get handle to shape's transformation matrix
+        mMVPMatrixHandle = GLES20.glGetUniformLocation(mProgram, "uMVPMatrix");
+        MyGLRenderer.checkGlError("glGetUniformLocation");
+
+        // Apply the projection and view transformation
+        GLES20.glUniformMatrix4fv(mMVPMatrixHandle, 1, false, mvpMatrix, 0);
+        MyGLRenderer.checkGlError("glUniformMatrix4fv");
+
+        // Draw the triangle
+        GLES20.glDrawArrays(GLES20.GL_TRIANGLE_FAN, 0, vertexCount);
+
+        // Disable vertex array
+        GLES20.glDisableVertexAttribArray(mPositionHandle);
     }
 }
