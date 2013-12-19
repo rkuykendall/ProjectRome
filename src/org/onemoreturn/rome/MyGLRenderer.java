@@ -22,18 +22,25 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     private float viewY = 0;
 	private float viewZ = 0;
 
-//	private int mDisplayWidth;
-//	private int mDisplayHeight;	
-//	public float[] unproject(float rx, float ry, float rz) {
-//	    float[] xyzw = {0, 0, 0, 0};
-//	    int[] viewport = {0, 0, mDisplayWidth, mDisplayHeight};
-//	    android.opengl.GLU.gluUnProject(rx, ry, rz, mMatrixGrabber.mModelView, 0, mMatrixGrabber.mProjection, 0, viewport, 0, xyzw, 0);
-//	    xyzw[0] /= xyzw[3];
-//	    xyzw[1] /= xyzw[3];
-//	    xyzw[2] /= xyzw[3];
-//	    xyzw[3] = 1;
-//	    return xyzw;
-//	}
+	private int mDisplayWidth;
+	private int mDisplayHeight;	
+
+	public float[] unproject(float rx, float ry) {
+		float rz = 1;
+	    float[] xyzw = {0, 0, 0, 0};
+	    int[] viewport = {0, 0, mDisplayWidth, mDisplayHeight};
+	    android.opengl.GLU.gluUnProject(
+	    		rx, ry, rz, // window coordinates
+	    		mViewMatrix, 0,
+	    		mProjectionMatrix, 0, 
+	    		viewport, 0,
+	    		xyzw, 0);
+	    xyzw[0] /= xyzw[3];
+	    xyzw[1] /= xyzw[3];
+	    xyzw[2] /= xyzw[3];
+	    xyzw[3] = 1;
+	    return xyzw;
+	}
 	
     @Override
     public void onSurfaceCreated(GL10 unused, EGLConfig config) {
@@ -118,6 +125,9 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
     @Override
     public void onSurfaceChanged(GL10 gl, int width, int height) {
+    	mDisplayWidth = width;
+    	mDisplayHeight = height;
+    	
         // Adjust the viewport based on geometry changes,
         // such as screen rotation
         GLES20.glViewport(0, 0, width, height);
