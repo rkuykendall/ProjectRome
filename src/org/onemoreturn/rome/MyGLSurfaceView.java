@@ -95,8 +95,9 @@ public class MyGLSurfaceView extends GLSurfaceView {
 			requestRender();
 			break;
 		case MotionEvent.ACTION_DOWN:
+    		Log.e("Touch","x"+x+" y"+y);
     		float[] touch = mRenderer.unproject(x,y);
-    		Log.e("Touch","x"+touch[0]+" y"+touch[1]+" z"+touch[0]);
+    		Log.e("Touch","x"+touch[0]+" y"+touch[1]+" z"+touch[2]);
 
 		}
 

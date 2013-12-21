@@ -1,5 +1,6 @@
 package org.onemoreturn.rome;
 
+
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
@@ -25,21 +26,78 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 	private int mDisplayWidth;
 	private int mDisplayHeight;	
 
-	public float[] unproject(float rx, float ry) {
-		float rz = 1;
-	    float[] xyzw = {0, 0, 0, 0};
-	    int[] viewport = {0, 0, mDisplayWidth, mDisplayHeight};
-	    android.opengl.GLU.gluUnProject(
-	    		rx, ry, rz, // window coordinates
-	    		mViewMatrix, 0,
-	    		mProjectionMatrix, 0, 
-	    		viewport, 0,
-	    		xyzw, 0);
-	    xyzw[0] /= xyzw[3];
-	    xyzw[1] /= xyzw[3];
-	    xyzw[2] /= xyzw[3];
-	    xyzw[3] = 1;
-	    return xyzw;
+	public float[] unproject(float ScreenX, float ScreenY) {
+//		float rz = 1;
+//	    float[] xyzw = {0, 0, 0, 0};
+//	    int[] viewport = {0, 0, mDisplayWidth, mDisplayHeight};
+//	    android.opengl.GLU.gluUnProject(
+//	    		rx, ry, rz, // window coordinates
+//	    		mViewMatrix, 0,
+//	    		mProjectionMatrix, 0, 
+//	    		viewport, 0,
+//	    		xyzw, 0);
+//	    xyzw[0] /= xyzw[3];
+//	    xyzw[1] /= xyzw[3];
+//	    xyzw[2] /= xyzw[3];
+//	    xyzw[3] = 1;
+//	    
+//	    xyzw[0] = viewX+rx;
+//	    xyzw[1] = viewY+ry;
+//	    return xyzw;
+	    
+	    
+		// Converting my variable names to example variable names.
+		int ViewportW = mDisplayWidth;
+		int ViewportH = mDisplayHeight;
+		double ViewportX = viewX;
+		double ViewportY = viewY;
+		double ScreenZ = 1;
+		float[] ProjectionMatrix = mProjectionMatrix;
+		float[] ModelViewMatrix = mViewMatrix;
+				
+	    // Step 1:
+	    
+	    	// Screen Space to NDC space (Undo Viewport Transform)
+
+	    	    // NdcX = (2.0 * (ScreenX - ViewportX) / ViewportW) - 1.0
+				float NdcX = (float) ((2.0 * (ScreenX - ViewportX) / ViewportW) - 1.0);
+	    	    // NdcY = (2.0 * (ScreenY - ViewportY) / ViewportH)  - 1.0
+				float NdcY = (float) ((2.0 * (ScreenY - ViewportY) / ViewportH)  - 1.0);
+
+	    	// Screen Space to NDC space (Undo Depth Range Mapping)
+
+	    	    // Typically in screen space, the Depth Range will map z=0 to near and z=1 to far:
+	    	    // NdcZ = 2.0 * ScreenZ - 1.0
+				float NdcZ = (float) (2.0 * ScreenZ - 1.0);
+
+	    // Step 2 (see extra):
+
+			// Ndc space to Object space (Undo Projection, View and Model Transforms)
+
+	    	    // (Projection Matrix)-1  * NDCXYZ1  = ViewXYZW
+	    	    // (ModelView Matrix)-1 * ViewXYZW = ObjectXYZW
+
+	    	        // EXTRA: This can actually be combined into a single step, as you will see below...
+					// ObjectXYZw = (Projection Matrix * ModelView Matrix)-1 * NdcXyz1
+					float[] ProjectionModelViewMatrix = new float[16];
+					Matrix.multiplyMM(ProjectionModelViewMatrix, 0, ProjectionMatrix, 0, ModelViewMatrix, 0);
+					float[] ProjectionModelViewMatrixInv = new float[16];
+					Matrix.invertM(ProjectionModelViewMatrixInv,0,ProjectionModelViewMatrix,0);
+					float[] NdcXYZ1 = {NdcX,NdcY,NdcZ,(float) 1.0};
+					float[] ObjectXYZW = new float[4];
+					Matrix.multiplyMV(ObjectXYZW,0,ProjectionModelViewMatrixInv,0,NdcXYZ1,0);
+
+	    	// Now, you may notice that I crossed-out W in ObjectXYZ, we really 
+			// do not care about this at all but the math will produce a pesky 
+			// W value nevertheless. At this point, you can return the individual 
+			// components of ObjectXYZ as your rX, rY and rZ.
+			return ObjectXYZW;
+			
+			// Maybe use two points to get z=0 point
+			// float[] pt1 = {ObjectXYZW[0],ObjectXYZW[1],ObjectXYZW[2]};
+			// float[] pt2 = {viewX,viewY,viewZ};
+
+			
 	}
 	
     @Override
@@ -68,7 +126,6 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 		  0f, 100.0f, 0.0f				// Up xyz
     	);
 
-        
         // Calculate the projection and view transformation
         Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);
 
