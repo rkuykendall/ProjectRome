@@ -2,9 +2,9 @@ package org.onemoreturn.rome;
 
 import android.content.Context;
 import android.opengl.GLSurfaceView;
-import android.util.FloatMath;
 import android.util.Log;
 import android.view.MotionEvent;
+import java.lang.Math;
 
 /**
  * A view container where OpenGL ES graphics can be drawn on screen.
@@ -65,7 +65,7 @@ public class MyGLSurfaceView extends GLSurfaceView {
 			if (e.getPointerCount() >= 2) {
 				float sx = x - e.getX(1);
 				float sy = y - e.getY(1);
-				z = FloatMath.sqrt(sx*sx + sy*sy);
+				z = (float) Math.sqrt((sy * sy) + (sx * sx));
 				if (mPreviousZ == -1) { mPreviousZ = z; }
 
 				// Log.d(TAG, "newDist=" + newDist);
