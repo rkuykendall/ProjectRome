@@ -44,7 +44,10 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 //	    xyzw[0] = viewX+rx;
 //	    xyzw[1] = viewY+ry;
 //	    return xyzw;
-	    
+
+        // From
+        // http://stackoverflow.com/questions/20693770/
+        // using-gluunproject-to-map-touches-to-x-y-cords-on-z-0-plane-in-android-opengl-es
 	    
 		// Converting my variable names to example variable names.
 		int ViewportW = mDisplayWidth;
@@ -91,13 +94,13 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 			// do not care about this at all but the math will produce a pesky 
 			// W value nevertheless. At this point, you can return the individual 
 			// components of ObjectXYZ as your rX, rY and rZ.
-			return ObjectXYZW;
-			
-			// Maybe use two points to get z=0 point
-			// float[] pt1 = {ObjectXYZW[0],ObjectXYZW[1],ObjectXYZW[2]};
-			// float[] pt2 = {viewX,viewY,viewZ};
 
-			
+            return ObjectXYZW;
+            // End of SO answer
+
+        // Maybe use two points to get z=0 point
+        // float[] pt1 = {ObjectXYZW[0],ObjectXYZW[1],ObjectXYZW[2]};
+        // float[] pt2 = {viewX,viewY,viewZ};
 	}
 	
     @Override
@@ -119,12 +122,15 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
 
         // Set the camera position (View matrix)
-        // Matrix.setLookAtM(mViewMatrix, 0, 0, 0, -3, 0f, 0f, 0f, 0f, 1.0f, 0.0f);
         Matrix.setLookAtM(mViewMatrix, 0,
-		  viewX, viewY-2, viewZ-5.9f, 	// Eye xyz
-		  viewX, viewY, 0f, 			// Center xyz
-		  0f, 100.0f, 0.0f				// Up xyz
-    	);
+                viewX, viewY, viewZ-5.9f,
+                viewX, viewY, 0f,
+                0f, 100.0f, 0.0f);
+        //        Matrix.setLookAtM(mViewMatrix, 0,
+        //		  viewX, viewY-2, viewZ-5.9f, 	// Eye xyz
+        //		  viewX, viewY, 0f, 			// Center xyz
+        //		  0f, 100.0f, 0.0f				// Up xyz
+        //    	);
 
         // Calculate the projection and view transformation
         Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);
