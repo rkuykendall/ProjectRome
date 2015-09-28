@@ -54,6 +54,7 @@ public class GLRenderer implements Renderer {
 	{
 		mContext = c;
 		mLastTime = System.currentTimeMillis() + 100;
+        sprite = new Sprite();
 	}
 	
 	public void onPause()

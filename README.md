@@ -5,33 +5,17 @@ A 4X game for Android (Explore, Expand, Exploite, Exterminate)
 
 
 
-  What is Project: Rome?
-  ---------------------
+What is Project: Rome?
+---------------------
 
-  Project: Rome is a multi-platform 4x Turn Based Strategy game. 
-  Drawing from such titles as Sid Meir's Alpha Centauri TM ®, Civilization TM® series, as 
-  well as influences from Warcraft TM® & the Ceaser TM® series. 
-  
-  Documentation
-  -------------
+Project: Rome is a multi-platform 4x Turn Based Strategy game.
+Drawing from such titles as Sid Meir's Alpha Centauri TM ®, Civilization TM® series, as
+well as influences from Warcraft TM® & the Ceaser TM® series.
 
-  The documentation available as of the date of this release is
-  included in HTML format in the XXXXXXXXX directory.  The most
-  up-to-date documentation can be found at:
-  https://github.com/rkuykendall/ProjectRome.
-  
-  Installation
-  ------------
+ Documentation
+ -------------
 
-  Please see the file called INSTALL.  Platform specific notes can be
-  found in README.platforms.
-
-  Licensing
-  ---------
-
-  Please see the file called LICENSE.
-  
-  Contacts
-  --------
-
-
+The documentation available as of the date of this release is
+included in HTML format in the XXXXXXXXX directory. The most
+up-to-date documentation can be found at:
+https://github.com/rkuykendall/project-rome.
