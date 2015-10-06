@@ -121,7 +121,7 @@ public class GLRenderer implements Renderer {
         int mSamplerLoc = GLES20.glGetUniformLocation (riGraphicTools.sp_Image, "s_texture" );
         
         // Set the sampler texture unit to 0, where we have saved the texture.
-        GLES20.glUniform1i ( mSamplerLoc, 0);
+        GLES20.glUniform1i (mSamplerLoc, 0);
 
         // Draw the triangle
         GLES20.glDrawElements(GLES20.GL_TRIANGLES, indices.length, GLES20.GL_UNSIGNED_SHORT, drawListBuffer);
@@ -129,7 +129,6 @@ public class GLRenderer implements Renderer {
         // Disable vertex array
         GLES20.glDisableVertexAttribArray(mPositionHandle);
         GLES20.glDisableVertexAttribArray(mTexCoordLoc);
-        	
 	}
 	
 
@@ -285,29 +284,24 @@ public class GLRenderer implements Renderer {
 	
 	public void SetupImage()
 	{
-		// We will use a randomizer for randomizing the textures from texture atlas.
-		// This is strictly optional as it only effects the output of our app,
-		// Not the actual knowledge.
-		Random rnd = new Random();
-		
 		// 30 imageobjects times 4 vertices times (u and v)
 		uvs = new float[30*4*2];
 		
 		// We will make 30 randomly textures objects
 		for(int i=0; i<30; i++)
 		{
-			int random_u_offset = rnd.nextInt(2);
-			int random_v_offset = rnd.nextInt(2);
-			
 			// Adding the UV's using the offsets
-			uvs[(i*8) + 0] = random_u_offset * 0.5f;
-			uvs[(i*8) + 1] = random_v_offset * 0.5f;
-			uvs[(i*8) + 2] = random_u_offset * 0.5f;
-			uvs[(i*8) + 3] = (random_v_offset+1) * 0.5f;
-			uvs[(i*8) + 4] = (random_u_offset+1) * 0.5f;
-			uvs[(i*8) + 5] = (random_v_offset+1) * 0.5f;
-			uvs[(i*8) + 6] = (random_u_offset+1) * 0.5f;
-			uvs[(i*8) + 7] = random_v_offset * 0.5f;	
+			uvs[(i*8) + 0] = 0.0f;
+			uvs[(i*8) + 1] = 0.0f;
+
+			uvs[(i*8) + 2] = 0.0f;
+			uvs[(i*8) + 3] = 1.0f;
+
+			uvs[(i*8) + 4] = 1.0f;
+			uvs[(i*8) + 5] = 1.0f;
+
+			uvs[(i*8) + 6] = 1.0f;
+			uvs[(i*8) + 7] = 0.0f;
 		}
 		
 		// The texture buffer
@@ -322,7 +316,7 @@ public class GLRenderer implements Renderer {
 		GLES20.glGenTextures(2, texturenames, 0);
 		
 		// Retrieve our image from resources.
-		int id = mContext.getResources().getIdentifier("drawable/textureatlas", null, mContext.getPackageName());
+		int id = mContext.getResources().getIdentifier("drawable/hex_grass", null, mContext.getPackageName());
 		
 		// Temporary create a bitmap
 		Bitmap bmp = BitmapFactory.decodeResource(mContext.getResources(), id);
@@ -363,8 +357,8 @@ public class GLRenderer implements Renderer {
 		// Create the vertex data
 		for(int i=0;i<30;i++)
 		{
-			int offset_x = rnd.nextInt((int)swp);
-			int offset_y = rnd.nextInt((int)shp);
+			 int offset_x = (int)(swp/30)*(i+1);
+			int offset_y = (int)(shp/10)*(i%3) / 2;
 			
 			// Create the 2D parts of our 3D vertices, others are default 0.0f
 			vertices[(i*12) + 0] = offset_x;
