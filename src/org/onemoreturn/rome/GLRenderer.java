@@ -216,7 +216,7 @@ public class GLRenderer implements Renderer {
 		tm.setUniformscale(ssu);
 		
 		// Create our new textobject
-		TextObject txt = new TextObject("hello world", 10f, 10f);
+		TextObject txt = new TextObject("Project Rome", 10f, 10f);
 		
 		// Add it to our manager
 		tm.addText(txt);
