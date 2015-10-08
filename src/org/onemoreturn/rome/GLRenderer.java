@@ -81,7 +81,7 @@ public class GLRenderer implements Renderer {
     	long elapsed = now - mLastTime;
 		
 		// Update our example
-		//UpdateSprite();
+		UpdateSprite();
 		
 		// Render our example
 		Render(mtrxProjectionAndView);
@@ -271,14 +271,14 @@ public class GLRenderer implements Renderer {
 	public void UpdateSprite()
 	{
 		// Get new transformed vertices
-		//vertices = sprite.getTransformedVertices();
-		
+		vertices = sprite.getTransformedVertices();
+
 		// The vertex buffer.
 		ByteBuffer bb = ByteBuffer.allocateDirect(vertices.length * 4);
 		bb.order(ByteOrder.nativeOrder());
-		vertexBuffer = bb.asFloatBuffer();
-		vertexBuffer.put(vertices);
-		vertexBuffer.position(0);
+//		vertexBuffer = bb.asFloatBuffer();
+//		vertexBuffer.put(vertices);
+//		vertexBuffer.position(0);
 	}
 	
 	
@@ -348,9 +348,6 @@ public class GLRenderer implements Renderer {
 	
 	public void SetupTriangle()
 	{
-		// We will need a randomizer
-		Random rnd = new Random();
-		
 		// Our collection of vertices
 		vertices = new float[30*4*3];
 		
@@ -359,20 +356,16 @@ public class GLRenderer implements Renderer {
 		int offset_y = 1200;
 		for(int i=0;i<30;i++)
 		{
-			double scaler = 0.70;
 			if (i%5 == 0) {
-				offset_y -= (int)(scaler*120);
-				offset_x = (int)(scaler*200);
+				offset_y -= 80;
+				offset_x = 140;
 				if (i % 10 == 0) {
-					offset_x += (int)(scaler*100);
+					offset_x += 68;
 				}
 
 			}
-			offset_x += (int)(scaler*200);
+			offset_x += 136;
 
-//			int offset_x = (int)(swp/30)*(i+1);
-//			int offset_y = (int)(shp/10)*(i%3) / 2;
-			
 			// Create the 2D parts of our 3D vertices, others are default 0.0f
 			vertices[(i*12) + 0] = offset_x;
 			vertices[(i*12) + 1] = offset_y + (30.0f*ssu);
