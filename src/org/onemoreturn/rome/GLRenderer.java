@@ -18,6 +18,7 @@ import android.opengl.GLES20;
 import android.opengl.GLUtils;
 import android.opengl.GLSurfaceView.Renderer;
 import android.opengl.Matrix;
+import android.util.Log;
 import android.view.MotionEvent;
 
 public class GLRenderer implements Renderer {
@@ -243,7 +244,7 @@ public class GLRenderer implements Renderer {
 	
 	public void processTouchEvent(MotionEvent event)
 	{
-		// Get the half of screen value
+        // Get the half of screen value
 		int screenhalf = (int) (mScreenWidth / 2);
 		int screenheightpart = (int) (mScreenHeight / 3);
 		if(event.getX()<screenhalf)
@@ -271,11 +272,13 @@ public class GLRenderer implements Renderer {
 	public void UpdateSprite()
 	{
 		// Get new transformed vertices
-		vertices = sprite.getTransformedVertices();
+//		vertices = sprite.getTransformedVertices();
 
 		// The vertex buffer.
-		ByteBuffer bb = ByteBuffer.allocateDirect(vertices.length * 4);
-		bb.order(ByteOrder.nativeOrder());
+//		ByteBuffer bb = ByteBuffer.allocateDirect(vertices.length * 4);
+//		bb.order(ByteOrder.nativeOrder());
+
+//		Log.v("debug", "did something");
 //		vertexBuffer = bb.asFloatBuffer();
 //		vertexBuffer.put(vertices);
 //		vertexBuffer.position(0);
@@ -285,30 +288,16 @@ public class GLRenderer implements Renderer {
 	public void SetupImage()
 	{
 		// 30 imageobjects times 4 vertices times (u and v)
-		uvs = new float[30*4*2];
-		
-		// We will make 30 randomly textures objects
-		for(int i=0; i<30; i++)
-		{
-			// Adding the UV's using the offsets
-			uvs[(i*8) + 0] = 0.0f;
-			uvs[(i*8) + 1] = 0.0f;
+        float[] uvs = {0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f};
+        int num_tiles = 30;
 
-			uvs[(i*8) + 2] = 0.0f;
-			uvs[(i*8) + 3] = 1.0f;
-
-			uvs[(i*8) + 4] = 1.0f;
-			uvs[(i*8) + 5] = 1.0f;
-
-			uvs[(i*8) + 6] = 1.0f;
-			uvs[(i*8) + 7] = 0.0f;
-		}
-		
 		// The texture buffer
-		ByteBuffer bb = ByteBuffer.allocateDirect(uvs.length * 4);
+		ByteBuffer bb = ByteBuffer.allocateDirect(uvs.length * num_tiles * 4);
 		bb.order(ByteOrder.nativeOrder());
 		uvBuffer = bb.asFloatBuffer();
-		uvBuffer.put(uvs);
+        for(int i=0; i<num_tiles; i++) {
+            uvBuffer.put(uvs);
+        }
 		uvBuffer.position(0);
 		
 		// Generate Textures, if more needed, alter these numbers.
@@ -348,41 +337,20 @@ public class GLRenderer implements Renderer {
 	
 	public void SetupTriangle()
 	{
-		// Our collection of vertices
-		vertices = new float[30*4*3];
-		
-		// Create the vertex data
-		int offset_x = 200;
-		int offset_y = 1200;
-		for(int i=0;i<30;i++)
-		{
-			if (i%5 == 0) {
-				offset_y -= 80;
-				offset_x = 140;
-				if (i % 10 == 0) {
-					offset_x += 68;
-				}
+       // Our collection of vertices
+		vertices = new float[25*4*3];
 
-			}
-			offset_x += 136;
-
-			// Create the 2D parts of our 3D vertices, others are default 0.0f
-			vertices[(i*12) + 0] = offset_x;
-			vertices[(i*12) + 1] = offset_y + (30.0f*ssu);
-			vertices[(i*12) + 2] = 0f;
-
-			vertices[(i*12) + 3] = offset_x;
-			vertices[(i*12) + 4] = offset_y;
-			vertices[(i*12) + 5] = 0f;
-
-			vertices[(i*12) + 6] = offset_x + (30.0f*ssu);
-			vertices[(i*12) + 7] = offset_y;
-			vertices[(i*12) + 8] = 0f;
-
-			vertices[(i*12) + 9] = offset_x + (30.0f*ssu);
-			vertices[(i*12) + 10] = offset_y + (30.0f*ssu);
-			vertices[(i*12) + 11] = 0f;
-		}
+        // Create the vertex data
+        for(int y=0; y<5; y++) {
+            for (int x=0; x<5; x++) {
+                Tile t = new Tile(x, y);
+                float[] v = t.getVertices();
+                int tilenum = y*5+x;
+                for (int z=0;z<v.length;z++) {
+                    vertices[(4*3*tilenum)+z] = v[z];
+                }
+            }
+        }
 		
 		// The indices for all textured quads
 		indices = new short[30*6]; 
@@ -417,7 +385,47 @@ public class GLRenderer implements Renderer {
 		drawListBuffer.put(indices);
 		drawListBuffer.position(0);
 	}
-	
+
+    class Tile
+    {
+        public int x;
+        public int y;
+
+        public Tile(int x, int y)
+        {
+            this.x = x;
+            this.y = y;
+        }
+
+        public float[] getVertices()
+        {
+            float[] tile_verts = new float[4*3];
+            int offset_x = 140 + (136*x) + ((y%2)*68);
+            int offset_y = 1200 - (80*y);
+
+            // Create the 2D parts of our 3D vertices, others are default 0.0f
+            tile_verts[0] = offset_x;
+            tile_verts[1] = offset_y + (30.0f*ssu);
+            tile_verts[2] = 0f;
+
+            tile_verts[3] = offset_x;
+            tile_verts[4] = offset_y;
+            tile_verts[5] = 0f;
+
+            tile_verts[6] = offset_x + (30.0f*ssu);
+            tile_verts[7] = offset_y;
+            tile_verts[8] = 0f;
+
+            tile_verts[9] = offset_x + (30.0f*ssu);
+            tile_verts[10] = offset_y + (30.0f*ssu);
+            tile_verts[11] = 0f;
+
+
+            return tile_verts;
+        }
+
+    }
+
 	class Sprite
 	{
 		float angle;
