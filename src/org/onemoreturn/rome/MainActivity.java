@@ -1,53 +1,89 @@
 package org.onemoreturn.rome;
 
-import android.opengl.GLSurfaceView;
-import android.os.Bundle;
+import android.annotation.TargetApi;
 import android.app.Activity;
+import android.os.Build;
+import android.os.Bundle;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
+
+import org.onemoreturn.rome.graphics.Sprite;
+import org.onemoreturn.rome.R;
 
 public class MainActivity extends Activity {
 
-	// Our OpenGL Surfaceview
-	private GLSurfaceView glSurfaceView;
-	
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		
-		// Turn off the window's title bar
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        
-        // Super
-		super.onCreate(savedInstanceState);
-		
-		// Fullscreen mode
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        
-        // We create our Surfaceview for our OpenGL here.
-        glSurfaceView = new GLSurf(this);
-        
-        // Set our view.	
-		setContentView(R.layout.activity_main);
-		
-		// Retrieve our Relative layout from our main layout we just set to our view.
-        RelativeLayout layout = (RelativeLayout) findViewById(R.id.gamelayout);
-        
-        // Attach our surfaceview to our relative layout from our main layout.
-        RelativeLayout.LayoutParams glParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
-        layout.addView(glSurfaceView, glParams);
-	}
+	protected FrameLayout mSurfaceContainer;
+	protected OpenGL2DSurfaceView mGLView;
+	protected ImageView mControlA, mControlB, mControlLeft, mControlRight;
+	public static float speedX = 0.0f;
 
 	@Override
-	protected void onPause() {
-		super.onPause();
-		glSurfaceView.onPause();
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+
+		makeFullscreen();
+
+		setContentView(R.layout.activity_main);
+
+		RelativeLayout layout = (RelativeLayout) findViewById(R.id.gamelayout);
+
+		mGLView = new OpenGL2DSurfaceView(this);
+		layout.addView(mGLView);
+	}
+
+	protected void makeFullscreen() {
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
+		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+				WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+			makeFullscreenJellybean();
+		}
+	}
+
+	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+	protected void makeFullscreenJellybean() {
+		int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN
+				| View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
+		getWindow().getDecorView().setSystemUiVisibility(uiOptions);
+	}
+
+	@TargetApi(Build.VERSION_CODES.KITKAT)
+	protected void makeFullescreenKitkat() {
+		getWindow().getDecorView().setSystemUiVisibility(
+				View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+						| View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+						| View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+						| View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+						| View.SYSTEM_UI_FLAG_FULLSCREEN
+						| View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
 	}
 
 	@Override
 	protected void onResume() {
 		super.onResume();
-		glSurfaceView.onResume();
+		mGLView.onResume();
 	}
 
+	@Override
+	protected void onPause() {
+		super.onPause();
+		mGLView.onPause();
+	}
+
+	@Override
+	public void onWindowFocusChanged(boolean hasFocus) {
+		super.onWindowFocusChanged(hasFocus);
+
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && hasFocus) {
+			makeFullescreenKitkat();
+		}
+	}
 }
