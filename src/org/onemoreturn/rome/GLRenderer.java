@@ -4,7 +4,6 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
-import java.util.Random;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -46,7 +45,12 @@ public class GLRenderer implements Renderer {
 	float 	swp = 320.0f;
 	float 	shp = 480.0f;
 
-	// Misc
+    // Tiles
+    int num_x = 10;
+    int num_y = 20;
+    int num_tiles = num_x * num_y;
+
+    // Misc
 	Context mContext;
 	long mLastTime;
 	int mProgram;
@@ -120,12 +124,16 @@ public class GLRenderer implements Renderer {
         
         // Get handle to textures locations
         int mSamplerLoc = GLES20.glGetUniformLocation (riGraphicTools.sp_Image, "s_texture" );
-        
+
+
+
         // Set the sampler texture unit to 0, where we have saved the texture.
-        GLES20.glUniform1i (mSamplerLoc, 0);
+        GLES20.glUniform1i (mSamplerLoc, 2);
 
         // Draw the triangle
         GLES20.glDrawElements(GLES20.GL_TRIANGLES, indices.length, GLES20.GL_UNSIGNED_SHORT, drawListBuffer);
+
+
 
         // Disable vertex array
         GLES20.glDisableVertexAttribArray(mPositionHandle);
@@ -287,9 +295,7 @@ public class GLRenderer implements Renderer {
 	
 	public void SetupImage()
 	{
-		// 30 imageobjects times 4 vertices times (u and v)
         float[] uvs = {0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f};
-        int num_tiles = 30;
 
 		// The texture buffer
 		ByteBuffer bb = ByteBuffer.allocateDirect(uvs.length * num_tiles * 4);
@@ -299,63 +305,57 @@ public class GLRenderer implements Renderer {
             uvBuffer.put(uvs);
         }
 		uvBuffer.position(0);
-		
-		// Generate Textures, if more needed, alter these numbers.
-		int[] texturenames = new int[2];
-		GLES20.glGenTextures(2, texturenames, 0);
-		
-		// Retrieve our image from resources.
-		int id = mContext.getResources().getIdentifier("drawable/hex_grass", null, mContext.getPackageName());
-		
-		// Temporary create a bitmap
-		Bitmap bmp = BitmapFactory.decodeResource(mContext.getResources(), id);
-		
-		// Bind texture to texturename
-		GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
-		GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, texturenames[0]);
-		
-		// Set filtering
-        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR);
-        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
-        
-        // Load the bitmap into the bound texture.
-        GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, bmp, 0);
-        
-        // We are done using the bitmap so we should recycle it.
-		bmp.recycle();
-		
-		// Again for the text texture
-		id = mContext.getResources().getIdentifier("drawable/font", null, mContext.getPackageName());
-		bmp = BitmapFactory.decodeResource(mContext.getResources(), id);
-		GLES20.glActiveTexture(GLES20.GL_TEXTURE0 + 1);
-		GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, texturenames[1]);
-		GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR);
-        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
-        GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, bmp, 0);
-        bmp.recycle();
+
+        String[] texture_file_names = {"hex_grass_grid", "font",  "hex_ice_grid"};
+
+        // Generate Textures, if more needed, alter these numbers.
+        int[] texturenames = new int[texture_file_names.length];
+        GLES20.glGenTextures(texture_file_names.length, texturenames, 0);
+
+        for(int i = 0; i < texture_file_names.length; i++) {
+            // Retrieve our image from resources.
+            int id = mContext.getResources().getIdentifier("drawable/" + texture_file_names[i], null, mContext.getPackageName());
+
+            // Temporary create a bitmap
+            Bitmap bmp = BitmapFactory.decodeResource(mContext.getResources(), id);
+
+            // Bind texture to texturename
+            GLES20.glActiveTexture(GLES20.GL_TEXTURE0 + i);
+            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, texturenames[i]);
+
+            // Set filtering
+            GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR);
+            GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
+
+            // Load the bitmap into the bound texture.
+            GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, bmp, 0);
+
+            // We are done using the bitmap so we should recycle it.
+            bmp.recycle();
+        }
 	}
 	
 	public void SetupTriangle()
 	{
-       // Our collection of vertices
-		vertices = new float[25*4*3];
+        // Our collection of vertices
+		vertices = new float[num_tiles*4*3];
 
         // Create the vertex data
-        for(int y=0; y<5; y++) {
-            for (int x=0; x<5; x++) {
+        for(int y=0; y<num_y; y++) {
+            for (int x=0; x<num_x; x++) {
                 Tile t = new Tile(x, y);
-                float[] v = t.getVertices();
-                int tilenum = y*5+x;
-                for (int z=0;z<v.length;z++) {
-                    vertices[(4*3*tilenum)+z] = v[z];
+                float[] tile_verts = t.getVertices();
+                int tilenum = y*num_x+x;
+                for (int i=0;i<tile_verts.length;i++) {
+                    vertices[(4*3*tilenum)+i] = tile_verts[i];
                 }
             }
         }
 		
 		// The indices for all textured quads
-		indices = new short[30*6]; 
+		indices = new short[num_tiles*6];
 		int last = 0;
-		for(int i=0;i<30;i++)
+		for(int i=0;i<num_tiles;i++)
 		{
 			// We need to set the new indices for the new quad
 			indices[(i*6) + 0] = (short) (last + 0);
@@ -400,8 +400,8 @@ public class GLRenderer implements Renderer {
         public float[] getVertices()
         {
             float[] tile_verts = new float[4*3];
-            int offset_x = 140 + (136*x) + ((y%2)*68);
-            int offset_y = 1200 - (80*y);
+            int offset_x = (int) ((30.0f*ssu*x) + ((y%2)*(15.0f*ssu)));
+            int offset_y = (int) 2000 - (int) (17.0f*ssu*y);
 
             // Create the 2D parts of our 3D vertices, others are default 0.0f
             tile_verts[0] = offset_x;
