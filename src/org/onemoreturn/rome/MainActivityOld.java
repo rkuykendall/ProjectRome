@@ -25,7 +25,7 @@ public class MainActivityOld extends Activity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         
         // We create our Surfaceview for our OpenGL here.
-        glSurfaceView = new GLSurf(this);
+        glSurfaceView = new GLSurfOld(this);
         
         // Set our view.	
 		setContentView(R.layout.activity_main);

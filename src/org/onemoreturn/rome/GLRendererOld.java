@@ -20,7 +20,7 @@ import android.opengl.Matrix;
 import android.util.Log;
 import android.view.MotionEvent;
 
-public class GLRenderer implements Renderer {
+public class GLRendererOld implements Renderer {
 
 	// Our matrices
 	private final float[] mtrxProjection = new float[16];
@@ -55,7 +55,7 @@ public class GLRenderer implements Renderer {
 	long mLastTime;
 	int mProgram;
 	
-	public GLRenderer(Context c)
+	public GLRendererOld(Context c)
 	{
 		mContext = c;
 		mLastTime = System.currentTimeMillis() + 100;

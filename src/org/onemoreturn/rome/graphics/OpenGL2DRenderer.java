@@ -48,7 +48,10 @@ public class OpenGL2DRenderer implements Renderer {
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
 		clear(DEFAULT_BG_COLOR);
 
-        mMap = new Map(4, 4);
+        GLES20.glEnable(GLES20.GL_BLEND);
+		GLES20.glBlendFunc(GLES20.GL_ONE, GLES20.GL_ONE_MINUS_SRC_ALPHA);
+
+		mMap = new Map(4, 4);
         mSprites = new Sprite[16];
         mSprites = mMap.getSprites(mContext);
 
@@ -73,10 +76,7 @@ public class OpenGL2DRenderer implements Renderer {
 	public void onDrawFrame(GL10 gl) {
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
 
-		GLES20.glEnable(GLES20.GL_BLEND);
-		GLES20.glBlendFunc(GLES20.GL_ONE, GLES20.GL_ONE_MINUS_SRC_ALPHA);
-
-        Matrix.setLookAtM(mViewMatrix, 0, 0f, 0f, 3f, 0f, 0f, 0f, 0f, 1f, 0f);
+		Matrix.setLookAtM(mViewMatrix, 0, 0f, 0f, 3f, 0f, 0f, 0f, 0f, 1f, 0f);
         Matrix.translateM(mViewMatrix, 0, mCameraX, mCameraY, mCameraZ);
         Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);
 

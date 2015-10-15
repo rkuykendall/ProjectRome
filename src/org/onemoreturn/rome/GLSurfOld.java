@@ -4,18 +4,18 @@ import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.view.MotionEvent;
 
-public class GLSurf extends GLSurfaceView {
+public class GLSurfOld extends GLSurfaceView {
 
-	private final GLRenderer mRenderer;
+	private final GLRendererOld mRenderer;
 	
-	public GLSurf(Context context) {
+	public GLSurfOld(Context context) {
         super(context);
 
         // Create an OpenGL ES 2.0 context.
         setEGLContextClientVersion(2);
 
         // Set the Renderer for drawing on the GLSurfaceView
-        mRenderer = new GLRenderer(context);
+        mRenderer = new GLRendererOld(context);
         setRenderer(mRenderer);
 
         // Render the view only when there is a change in the drawing data
