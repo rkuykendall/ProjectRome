@@ -73,6 +73,9 @@ public class OpenGL2DRenderer implements Renderer {
 	public void onDrawFrame(GL10 gl) {
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
 
+		GLES20.glEnable(GLES20.GL_BLEND);
+		GLES20.glBlendFunc(GLES20.GL_ONE, GLES20.GL_ONE_MINUS_SRC_ALPHA);
+
         Matrix.setLookAtM(mViewMatrix, 0, 0f, 0f, 3f, 0f, 0f, 0f, 0f, 1f, 0f);
         Matrix.translateM(mViewMatrix, 0, mCameraX, mCameraY, mCameraZ);
         Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);
@@ -110,14 +113,14 @@ public class OpenGL2DRenderer implements Renderer {
 	/**
 	 * Utility method for debugging OpenGL calls. Provide the name of the call
 	 * just after making it:
-	 * 
+	 *
 	 * <pre>
 	 * mColorHandle = GLES20.glGetUniformLocation(mProgram, &quot;vColor&quot;);
 	 * MyGLRenderer.checkGlError(&quot;glGetUniformLocation&quot;);
 	 * </pre>
-	 * 
+	 *
 	 * If the operation is not successful, the check throws an error.
-	 * 
+	 *
 	 * @param glOperation
 	 *            - Name of the OpenGL call to check.
 	 */
