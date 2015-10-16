@@ -4,19 +4,19 @@ import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.view.MotionEvent;
 
-public class GLSurfOld extends GLSurfaceView {
+public class OpenGL2DSurfaceViewOld extends GLSurfaceView {
 
-	private final GLRendererOld mRenderer;
+	private final OpenGL2DSurfaceViewOld mRenderer;
 	
-	public GLSurfOld(Context context) {
+	public OpenGL2DSurfaceViewOld(Context context) {
         super(context);
 
         // Create an OpenGL ES 2.0 context.
         setEGLContextClientVersion(2);
 
         // Set the Renderer for drawing on the GLSurfaceView
-        mRenderer = new GLRendererOld(context);
-        setRenderer(mRenderer);
+        mRenderer = new OpenGL2DSurfaceViewOld(context);
+//        setRenderer(mRenderer);
 
         // Render the view only when there is a change in the drawing data
         setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
@@ -38,7 +38,7 @@ public class GLSurfOld extends GLSurfaceView {
 	
 	@Override
     public boolean onTouchEvent(MotionEvent e) {
-		mRenderer.processTouchEvent(e);
+//		mRenderer.processTouchEvent(e);
 		return true;
 	}
 

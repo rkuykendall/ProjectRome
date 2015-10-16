@@ -20,7 +20,7 @@ import android.opengl.Matrix;
 import android.util.Log;
 import android.view.MotionEvent;
 
-public class GLRendererOld implements Renderer {
+public class OpenGL2DRendererOld implements Renderer {
 
 	// Our matrices
 	private final float[] mtrxProjection = new float[16];
@@ -55,18 +55,18 @@ public class GLRendererOld implements Renderer {
 	long mLastTime;
 	int mProgram;
 	
-	public GLRendererOld(Context c)
+	public OpenGL2DRendererOld(Context c)
 	{
 		mContext = c;
 		mLastTime = System.currentTimeMillis() + 100;
         sprite = new Sprite();
 	}
-	
+
 	public void onPause()
 	{
 		/* Do stuff to pause the renderer */
 	}
-	
+
 	public void onResume()
 	{
 		/* Do stuff to resume the renderer */

@@ -8,6 +8,7 @@ import android.opengl.GLES20;
 import android.opengl.GLSurfaceView.Renderer;
 import android.opengl.Matrix;
 import android.util.Log;
+import android.view.MotionEvent;
 
 import org.onemoreturn.rome.MainActivity;
 import org.onemoreturn.rome.logic.Map;
@@ -84,6 +85,23 @@ public class OpenGL2DRenderer implements Renderer {
             mSprites[i].draw(mMVPMatrix);
         }
     }
+
+    public void onPause()
+    {
+		/* Do stuff to pause the renderer */
+    }
+
+    public void onResume()
+    {
+		/* Do stuff to resume the renderer */
+    }
+
+	public void processTouchEvent(MotionEvent event)
+	{
+		Log.i("RENDERER", Float.toString(event.getY()));
+        Log.i("RENDERER", Float.toString(event.getX()));
+	}
+
 
 	protected void clearColor() {
 		GLES20.glClearColor(Color.red(mClearColor), Color.green(mClearColor),
