@@ -52,9 +52,11 @@ public class OpenGL2DRenderer implements Renderer {
         GLES20.glEnable(GLES20.GL_BLEND);
 		GLES20.glBlendFunc(GLES20.GL_ONE, GLES20.GL_ONE_MINUS_SRC_ALPHA);
 
-		mMap = new Map(4, 4);
-        mSprites = new Sprite[16];
-        mSprites = mMap.getSprites(mContext);
+		int map_x = 4;
+		int map_y = 4;
+		mMap = new Map(map_x, map_y, mContext);
+        mSprites = new Sprite[map_x * map_y];
+        mSprites = mMap.getSprites();
 
         for (int i = 0; i < mSprites.length; i++) {
             mSprites[i].init();
