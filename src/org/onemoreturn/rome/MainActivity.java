@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -16,6 +17,7 @@ import android.widget.RelativeLayout;
 
 import org.onemoreturn.rome.graphics.Sprite;
 import org.onemoreturn.rome.R;
+import org.onemoreturn.rome.logic.Map;
 
 public class MainActivity extends Activity {
 
@@ -23,6 +25,7 @@ public class MainActivity extends Activity {
 	protected OpenGL2DSurfaceView mGLView;
 	protected ImageView mControlA, mControlB, mControlLeft, mControlRight;
 	public static float speedX = 0.0f;
+	public Map mMap;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -34,8 +37,10 @@ public class MainActivity extends Activity {
 
 		RelativeLayout layout = (RelativeLayout) findViewById(R.id.gamelayout);
 
+		this.mMap = new Map(7, 17);
 		mGLView = new OpenGL2DSurfaceView(this);
-		layout.addView(mGLView);
+        mGLView.setMap(this.mMap);
+        layout.addView(mGLView);
 	}
 
 	protected void makeFullscreen() {
