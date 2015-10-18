@@ -7,24 +7,25 @@ import org.onemoreturn.rome.R;
 
 import org.onemoreturn.rome.graphics.Sprite;
 
+import java.util.Random;
+
 public class Tile {
     public Sprite mSprite;
 
     public int x;
     public int y;
+    public int state;
 
-    public Tile(int x, int y, Context mContext)
+    public Tile(int x, int y)
     {
+        Random rnd = new Random();
+        this.state = rnd.nextInt(2);
         this.x = x;
         this.y = y;
-
-        Bitmap bmp = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.hex_sand_grid);
-        mSprite = new Sprite(.25f*x + (y%2)*.125f - .7f, .145f*y, .25f, .25f, bmp);
-        // bmp.recycle();
     }
 
-    Sprite getSprite() {
-        return mSprite;
-    }
+//    Sprite getSprite() {
+//        return this.state;
+//    }
 
 }

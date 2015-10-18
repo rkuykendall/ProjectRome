@@ -12,6 +12,7 @@ import android.view.MotionEvent;
 
 import org.onemoreturn.rome.MainActivity;
 import org.onemoreturn.rome.logic.Map;
+import org.onemoreturn.rome.logic.Tile;
 import org.onemoreturn.rome.physics.SimpleRectanglePhysics;
 import org.onemoreturn.rome.R;
 
@@ -38,12 +39,21 @@ public class OpenGL2DRenderer implements Renderer {
 
 
     public Sprite[] mSprites;
-	public Sprite mSprite;
     public Map mMap;
+    public int[] tileTypes = new int[]{
+            R.drawable.hex_grass_grid,
+            R.drawable.hex_sand_grid,
+            R.drawable.hex_ice_grid
+    };
 
-	public OpenGL2DRenderer(Context context) {
-		mContext = context;
+    public OpenGL2DRenderer(Context context) {
+		this.mContext = context;
 	}
+
+    public void setMap(Map map) {
+        this.mMap = map;
+        this.mSprites = new Sprite[mMap.cols * mMap.rows];
+    }
 
 	@Override
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
@@ -51,16 +61,6 @@ public class OpenGL2DRenderer implements Renderer {
 
         GLES20.glEnable(GLES20.GL_BLEND);
 		GLES20.glBlendFunc(GLES20.GL_ONE, GLES20.GL_ONE_MINUS_SRC_ALPHA);
-
-		int map_x = 4;
-		int map_y = 4;
-		mMap = new Map(map_x, map_y, mContext);
-        mSprites = new Sprite[map_x * map_y];
-        mSprites = mMap.getSprites();
-
-        for (int i = 0; i < mSprites.length; i++) {
-            mSprites[i].init();
-        }
     }
 
 	@Override
@@ -71,20 +71,30 @@ public class OpenGL2DRenderer implements Renderer {
 		mHeight = height;
 
 		mAspectRatio = (float) width / height;
-		Matrix.frustumM(mProjectionMatrix, 0, -mAspectRatio, mAspectRatio, -1,
-                1, 3, 7);
+		Matrix.frustumM(mProjectionMatrix, 0, -mAspectRatio, mAspectRatio, -1, 1, 3, 7);
 	}
 
 	@Override
 	public void onDrawFrame(GL10 gl) {
+        Log.i("DEBUGGGGGGGGIIIIINGGGGGGG", Integer.toString(this.mMap.cols));
+        for (int i = 0; i < mMap.tiles.length; i++) {
+            Tile tile = mMap.tiles[i];
+            Bitmap bmp = BitmapFactory.decodeResource(mContext.getResources(), tileTypes[tile.state]);
+            mSprites[i] = new Sprite(.25f*tile.x + (tile.y%2)*.125f - .7f, .145f*tile.y - 0.7f, .25f, .25f, bmp);
+            mSprites[i].init();
+            // bmp.recycle();
+        }
+
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
 
 		Matrix.setLookAtM(mViewMatrix, 0, 0f, 0f, 3f, 0f, 0f, 0f, 0f, 1f, 0f);
         Matrix.translateM(mViewMatrix, 0, mCameraX, mCameraY, mCameraZ);
         Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);
 
-        for (int i = 0; i < mSprites.length; i++) {
-            mSprites[i].draw(mMVPMatrix);
+        if (null != this.mMap) {
+            for (int i = 0; i < mSprites.length; i++) {
+                mSprites[i].draw(mMVPMatrix);
+            }
         }
     }
 

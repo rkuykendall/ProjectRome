@@ -105,8 +105,7 @@ public class Sprite extends Rectangle {
 
 		mTexCoordLoc = GLES20.glGetAttribLocation(mProgram, "a_texCoord");
 		GLES20.glEnableVertexAttribArray(mTexCoordLoc);
-		GLES20.glVertexAttribPointer(mTexCoordLoc, 2, GLES20.GL_FLOAT, false,
-				0, mUVBuffer);
+		GLES20.glVertexAttribPointer(mTexCoordLoc, 2, GLES20.GL_FLOAT, false, 0, mUVBuffer);
 
 		mMVPMatrixHandle = GLES20.glGetUniformLocation(mProgram, "uMVPMatrix");
 		OpenGL2DRenderer.checkGlError("glGetUniformLocation");
