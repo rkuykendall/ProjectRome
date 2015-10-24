@@ -28,8 +28,14 @@ public class Tile {
         // This will eventually represent tye type of tile.
         this.type = (x+y)%typeTextures.length;
 
+        float tileW = .25f;
+        float tileH = .25f;
+
         Bitmap bmp = BitmapFactory.decodeResource(mContext.getResources(), typeTextures[type]);
-        mSprite = new Sprite(.25f*x + (y%2)*.125f - .7f, .145f*y, .25f, .25f, bmp);
+        mSprite = new Sprite(
+                tileW*x + (y%2)*(tileW/2), .145f*y,
+                tileW, tileH,
+                bmp);
         // bmp.recycle();
     }
 

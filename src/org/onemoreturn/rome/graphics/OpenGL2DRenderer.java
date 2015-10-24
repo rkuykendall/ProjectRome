@@ -38,7 +38,6 @@ public class OpenGL2DRenderer implements Renderer {
 
 
     public Sprite[] mSprites;
-	public Sprite mSprite;
     public Map mMap;
 
 	public OpenGL2DRenderer(Context context) {
@@ -52,8 +51,8 @@ public class OpenGL2DRenderer implements Renderer {
         GLES20.glEnable(GLES20.GL_BLEND);
 		GLES20.glBlendFunc(GLES20.GL_ONE, GLES20.GL_ONE_MINUS_SRC_ALPHA);
 
-		int map_x = 4;
-		int map_y = 6;
+		int map_x = 2;
+		int map_y = 2;
 		mMap = new Map(map_x, map_y, mContext);
         mSprites = new Sprite[map_x * map_y];
         mSprites = mMap.getSprites();
@@ -71,15 +70,23 @@ public class OpenGL2DRenderer implements Renderer {
 		mHeight = height;
 
 		mAspectRatio = (float) width / height;
-		Matrix.frustumM(mProjectionMatrix, 0, -mAspectRatio, mAspectRatio, -1,
-                1, 3, 7);
+		Matrix.frustumM(
+				mProjectionMatrix, 0, // m, offset
+				-mAspectRatio, mAspectRatio, // left, right
+				-1, 1, // bottom, top
+				3, 7); // near, far
 	}
 
 	@Override
 	public void onDrawFrame(GL10 gl) {
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
 
-		Matrix.setLookAtM(mViewMatrix, 0, 0f, 0f, 3f, 0f, 0f, 0f, 0f, 1f, 0f);
+        // Log.i("DEBUG", Float.toString(mAspectRatio));
+		Matrix.setLookAtM(
+                mViewMatrix, 0, // rm, rmOffset
+                mAspectRatio, -1.0f, 3f, // eye xyz
+                mAspectRatio, -1.0f, 0f, // center xyz
+                0f, 1f, 0f); // up xyz
         Matrix.translateM(mViewMatrix, 0, mCameraX, mCameraY, mCameraZ);
         Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);
 
@@ -116,7 +123,7 @@ public class OpenGL2DRenderer implements Renderer {
 	}
 
 	public void moveCamera(float x, float y, float z) {
-		mCameraX += x;
+        mCameraX += x;
 		mCameraY += y;
 		mCameraZ += z;
 	}

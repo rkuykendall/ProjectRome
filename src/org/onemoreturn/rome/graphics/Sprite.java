@@ -23,8 +23,7 @@ public class Sprite extends Rectangle {
 			+ "void main() {"
 			+ "  gl_FragColor = texture2D( s_texture, v_texCoord );" + "}";
 
-	private static final float UV[] = { 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
-			1.0f, 0.0f };
+	private static final float UV[] = { 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f };
 
 	protected int mTextureId;
 
