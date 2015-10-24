@@ -12,8 +12,9 @@ public class Tile {
 
     public int x;
     public int y;
+    public int type;
 
-    public int[] tileTypes = new int[] {
+    public int[] typeTextures = new int[] {
             R.drawable.hex_grass_grid,
             R.drawable.hex_sand_grid,
             R.drawable.hex_ice_grid
@@ -24,9 +25,10 @@ public class Tile {
         this.x = x;
         this.y = y;
 
-        int texture = tileTypes[(x+y)%tileTypes.length];
+        // This will eventually represent tye type of tile.
+        this.type = (x+y)%typeTextures.length;
 
-        Bitmap bmp = BitmapFactory.decodeResource(mContext.getResources(), texture);
+        Bitmap bmp = BitmapFactory.decodeResource(mContext.getResources(), typeTextures[type]);
         mSprite = new Sprite(.25f*x + (y%2)*.125f - .7f, .145f*y, .25f, .25f, bmp);
         // bmp.recycle();
     }

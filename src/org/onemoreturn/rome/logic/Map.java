@@ -28,7 +28,7 @@ public class Map {
         for (int y = 0; y < rows; y++) {
             for (int x = 0; x < cols; x++) {
                 // Render backwards so lower tiles are on top?
-                mSprites[(rows-y-1)*cols+x] = tiles[(y*rows)+x].getSprite();
+                mSprites[(rows-y-1)*cols+x] = tiles[(y*cols)+x].getSprite();
             }
         }
 
