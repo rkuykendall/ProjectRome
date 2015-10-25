@@ -51,8 +51,8 @@ public class OpenGL2DRenderer implements Renderer {
         GLES20.glEnable(GLES20.GL_BLEND);
 		GLES20.glBlendFunc(GLES20.GL_ONE, GLES20.GL_ONE_MINUS_SRC_ALPHA);
 
-		int map_x = 2;
-		int map_y = 2;
+		int map_x = 4;
+		int map_y = 13;
 		mMap = new Map(map_x, map_y, mContext);
         mSprites = new Sprite[map_x * map_y];
         mSprites = mMap.getSprites();
@@ -90,7 +90,7 @@ public class OpenGL2DRenderer implements Renderer {
         Matrix.translateM(mViewMatrix, 0, mCameraX, mCameraY, mCameraZ);
         Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);
 
-        for (int i = 0; i < mSprites.length; i++) {
+        for (int i = mSprites.length - 1; i >= 0; i--) {
             mSprites[i].draw(mMVPMatrix);
         }
     }

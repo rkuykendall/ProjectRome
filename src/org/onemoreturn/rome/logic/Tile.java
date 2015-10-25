@@ -30,10 +30,11 @@ public class Tile {
 
         float tileW = .25f;
         float tileH = .25f;
+        float lineH = tileH * (36f/65f);
 
         Bitmap bmp = BitmapFactory.decodeResource(mContext.getResources(), typeTextures[type]);
         mSprite = new Sprite(
-                tileW*x + (y%2)*(tileW/2), .145f*y,
+                tileW*x + (y%2)*(tileW/2), lineH*y*-1,
                 tileW, tileH,
                 bmp);
         // bmp.recycle();
