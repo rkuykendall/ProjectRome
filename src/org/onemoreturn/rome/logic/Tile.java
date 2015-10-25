@@ -14,6 +14,10 @@ public class Tile {
     public int y;
     public int type;
 
+    public float imgW = 65f;
+    public float imgH = 89f;
+    public float imgRatio = imgH / imgW;
+
     public int[] typeTextures = new int[] {
             R.drawable.hex_grass_grid,
             R.drawable.hex_sand_grid,
@@ -29,7 +33,7 @@ public class Tile {
         this.type = (x+y)%typeTextures.length;
 
         float tileW = .25f;
-        float tileH = .25f;
+        float tileH = .25f * imgRatio;
         float lineH = tileH * (36f/65f);
 
         Bitmap bmp = BitmapFactory.decodeResource(mContext.getResources(), typeTextures[type]);
